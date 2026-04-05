@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    stages {
+
+        stage('Clone Code') {
+            steps {
+                git 'https://github.com/Aarav2411/new-project.git'
+            }
+        }
+
+        stage('Build Docker Image') {
+            steps {
+                sh 'docker build -t cicd-app:latest .'
+            }
+        }
+
+        stage('Stop Old Container') {
+            steps {
+                sh 'docker stop cicd-container || true'
+                sh 'docker rm cicd-container || true'
+            }
+        }
+
+        stage('Run Container') {
+            steps {
+                sh 'docker run -d -p 80:80 --name cicd-container cicd-app:latest'
+            }
+        }
+    }
+}
