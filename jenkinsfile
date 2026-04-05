@@ -5,26 +5,21 @@ pipeline {
 
         stage('Clone Code') {
             steps {
-                git 'https://github.com/Aarav2411/new-project.git'
+                git branch: 'main', url: 'https://github.com/Aarav2411/Jenkinspipeline.git'
             }
         }
 
         stage('Build Docker Image') {
             steps {
-                sh 'docker build -t cicd-app:latest .'
-            }
-        }
-
-        stage('Stop Old Container') {
-            steps {
-                sh 'docker stop cicd-container || true'
-                sh 'docker rm cicd-container || true'
+                sh 'docker build -t cicd-app .'
             }
         }
 
         stage('Run Container') {
             steps {
-                sh 'docker run -d -p 80:80 --name cicd-container cicd-app:latest'
+                sh 'docker stop cicd-container || true'
+                sh 'docker rm cicd-container || true'
+                sh 'docker run -d -p 80:80 --name cicd-container cicd-app'
             }
         }
     }
